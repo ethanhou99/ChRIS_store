@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ImageStream
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: chris-store-dev-db
+  name: chris-store-dev-db
+spec:
+  tags:
+  - annotations: null
+    from:
+      kind: DockerImage
+      name: mysql:5
+    generation: null
+    importPolicy: {}
+    name: "5"
+status:
+  dockerImageRepository: ""
