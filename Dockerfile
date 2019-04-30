@@ -22,6 +22,7 @@
 FROM fnndsc/ubuntu-python3:latest
 MAINTAINER fnndsc "dev@babymri.org"
 
+RUN adduser user
 ENV APPROOT="/usr/src/store_backend" REQPATH="/usr/src/requirements" VERSION="0.1"
 COPY ["./requirements", "${REQPATH}"]
 COPY ["./store_backend", "${APPROOT}"]
@@ -30,7 +31,11 @@ COPY ["./store_backend", "${APPROOT}"]
 ARG UID=1001
 ENV UID=$UID
 
-RUN apt-get update \
+RUN dnf install -y sudo && \
+    adduser user && \
+    echo "user ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/user && \
+    chmod 0440 /etc/sudoers.d/user \
+    apt-get update \
   && apt-get install sudo                                             \
   && useradd -u $UID -ms /bin/bash localuser                          \
   && addgroup localuser sudo                                          \
@@ -42,6 +47,8 @@ RUN apt-get update \
   && mkdir /usr/users                                                 \
   && chmod 777 /usr/users                                             \
   && echo "localuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+RUN su - user -c "touch mine"
 
 WORKDIR $APPROOT
 EXPOSE 8010
