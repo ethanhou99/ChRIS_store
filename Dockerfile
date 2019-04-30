@@ -31,11 +31,7 @@ COPY ["./store_backend", "${APPROOT}"]
 ARG UID=1001
 ENV UID=$UID
 
-RUN dnf install -y sudo && \
-    adduser user && \
-    echo "user ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/user && \
-    chmod 0440 /etc/sudoers.d/user \
-    apt-get update \
+RUN apt-get update \
   && apt-get install sudo                                             \
   && useradd -u $UID -ms /bin/bash localuser                          \
   && addgroup localuser sudo                                          \
@@ -49,7 +45,6 @@ RUN dnf install -y sudo && \
   && echo "localuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 RUN su - user -c "touch mine"
-
 WORKDIR $APPROOT
 EXPOSE 8010
 
